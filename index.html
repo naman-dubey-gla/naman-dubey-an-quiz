@@ -1,0 +1,392 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>TechQuiz | Computer & Technology</title>
+
+  <style>
+    * {
+      box-sizing: border-box;
+    }
+
+    body {
+      margin: 0;
+      min-height: 100vh;
+      font-family: Arial, sans-serif;
+      color: #f8fafc;
+      background: linear-gradient(135deg, #0f172a, #312e81);
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      padding: 20px;
+    }
+
+    .container {
+      width: 100%;
+      max-width: 650px;
+      background: #ffffff;
+      color: #1e293b;
+      padding: 30px;
+      border-radius: 20px;
+      box-shadow: 0 15px 40px #00000040;
+    }
+
+    .brand {
+      text-align: center;
+      color: #4f46e5;
+      font-size: 15px;
+      font-weight: bold;
+      letter-spacing: 2px;
+    }
+
+    h1 {
+      text-align: center;
+      margin-bottom: 8px;
+    }
+
+    .subtitle {
+      text-align: center;
+      color: #64748b;
+      margin-bottom: 25px;
+    }
+
+    .progress-info {
+      display: flex;
+      justify-content: space-between;
+      font-size: 14px;
+      margin-bottom: 10px;
+    }
+
+    .progress-bar {
+      height: 8px;
+      background: #e2e8f0;
+      border-radius: 10px;
+      overflow: hidden;
+      margin-bottom: 25px;
+    }
+
+    #progress {
+      width: 10%;
+      height: 100%;
+      background: #6366f1;
+      transition: width 0.3s;
+    }
+
+    #question {
+      font-size: 22px;
+      line-height: 1.4;
+      margin-bottom: 20px;
+    }
+
+    #options {
+      display: grid;
+      gap: 12px;
+    }
+
+    .option {
+      width: 100%;
+      padding: 14px;
+      text-align: left;
+      border: 2px solid #e2e8f0;
+      border-radius: 12px;
+      background: white;
+      color: #1e293b;
+      font-size: 16px;
+      cursor: pointer;
+      transition: 0.2s;
+    }
+
+    .option:hover:not(:disabled) {
+      border-color: #6366f1;
+      background: #eef2ff;
+    }
+
+    .option.selected {
+      border-color: #4f46e5;
+      background: #e0e7ff;
+    }
+
+    .option:disabled {
+      cursor: default;
+    }
+
+    .main-button {
+      width: 100%;
+      margin-top: 22px;
+      padding: 14px;
+      border: none;
+      border-radius: 12px;
+      background: #4f46e5;
+      color: white;
+      font-size: 16px;
+      font-weight: bold;
+      cursor: pointer;
+    }
+
+    .main-button:hover {
+      background: #3730a3;
+    }
+
+    .main-button:disabled {
+      background: #a5b4fc;
+      cursor: not-allowed;
+    }
+
+    #message {
+      margin-top: 16px;
+      text-align: center;
+      font-weight: bold;
+    }
+
+    .result {
+      text-align: center;
+    }
+
+    .score {
+      font-size: 48px;
+      color: #4f46e5;
+      font-weight: bold;
+      margin: 20px 0;
+    }
+
+    .hidden {
+      display: none;
+    }
+
+    footer {
+      margin-top: 25px;
+      text-align: center;
+      color: #94a3b8;
+      font-size: 12px;
+    }
+
+    @media (max-width: 480px) {
+      .container {
+        padding: 22px 17px;
+      }
+
+      #question {
+        font-size: 19px;
+      }
+    }
+  </style>
+</head>
+
+<body>
+  <main class="container">
+    <div class="brand">💻 TECHQUIZ</div>
+    <h1>Computer & Technology Quiz</h1>
+    <p class="subtitle">Test your technology knowledge!</p>
+
+    <section id="quiz">
+      <div class="progress-info">
+        <span id="question-count">Question 1 of 10</span>
+        <span id="answered-count">Answered: 0</span>
+      </div>
+
+      <div class="progress-bar">
+        <div id="progress"></div>
+      </div>
+
+      <h2 id="question"></h2>
+      <div id="options"></div>
+      <p id="message" role="status"></p>
+
+      <button id="next-button" class="main-button">
+        Next Question →
+      </button>
+    </section>
+
+    <section id="result" class="result hidden">
+      <h2>Quiz Completed! 🎉</h2>
+      <p>Your final score is:</p>
+      <div id="score" class="score"></div>
+      <h3 id="result-message"></h3>
+      <p id="result-detail"></p>
+      <button id="restart-button" class="main-button">
+        ↻ Restart Quiz
+      </button>
+    </section>
+
+    <footer>
+      Created by Naman Dubey | Section AN
+    </footer>
+  </main>
+
+  <script>
+    const questions = [
+      {
+        question: "What does CPU stand for?",
+        options: [
+          "Central Processing Unit",
+          "Computer Personal Unit",
+          "Central Program Utility",
+          "Control Processing User"
+        ],
+        answer: 0
+      },
+      {
+        question: "Which language is used to structure web pages?",
+        options: ["Python", "HTML", "C", "SQL"],
+        answer: 1
+      },
+      {
+        question: "Which of these is an input device?",
+        options: ["Monitor", "Speaker", "Keyboard", "Printer"],
+        answer: 2
+      },
+      {
+        question: "What does RAM stand for?",
+        options: [
+          "Read Access Memory",
+          "Random Access Memory",
+          "Run Active Machine",
+          "Rapid Action Module"
+        ],
+        answer: 1
+      },
+      {
+        question: "Which company develops the Windows operating system?",
+        options: ["Microsoft", "Google", "Apple", "Intel"],
+        answer: 0
+      },
+      {
+        question: "Which technology is used to style web pages?",
+        options: ["HTML", "CSS", "SQL", "C"],
+        answer: 1
+      },
+      {
+        question: "Which of these is a web browser?",
+        options: ["Windows", "Linux", "Google Chrome", "Microsoft Excel"],
+        answer: 2
+      },
+      {
+        question: "What does URL stand for?",
+        options: [
+          "Uniform Resource Locator",
+          "Universal Record Link",
+          "United Resource Language",
+          "Uniform Reading Location"
+        ],
+        answer: 0
+      },
+      {
+        question: "Which of these is an operating system?",
+        options: ["Java", "HTML", "Linux", "Google Chrome"],
+        answer: 2
+      },
+      {
+        question: "Which language adds interactivity to web pages?",
+        options: ["JavaScript", "CSS", "HTML only", "SQL"],
+        answer: 0
+      }
+    ];
+
+    let currentQuestion = 0;
+    let score = 0;
+    let selectedAnswer = null;
+    let answered = 0;
+
+    const questionElement = document.getElementById("question");
+    const optionsElement = document.getElementById("options");
+    const messageElement = document.getElementById("message");
+    const nextButton = document.getElementById("next-button");
+
+    function showQuestion() {
+      selectedAnswer = null;
+      messageElement.textContent = "";
+
+      const item = questions[currentQuestion];
+
+      document.getElementById("question-count").textContent =
+        `Question ${currentQuestion + 1} of ${questions.length}`;
+
+      document.getElementById("answered-count").textContent =
+        `Answered: ${answered}`;
+
+      document.getElementById("progress").style.width =
+        `${(currentQuestion / questions.length) * 100}%`;
+
+      questionElement.textContent = item.question;
+      optionsElement.innerHTML = "";
+
+      item.options.forEach((option, index) => {
+        const button = document.createElement("button");
+        button.className = "option";
+        button.textContent =
+          `${String.fromCharCode(65 + index)}. ${option}`;
+
+        button.addEventListener("click", () => {
+          selectedAnswer = index;
+
+          document.querySelectorAll(".option").forEach(btn => {
+            btn.classList.remove("selected");
+          });
+
+          button.classList.add("selected");
+          messageElement.textContent = "";
+        });
+
+        optionsElement.appendChild(button);
+      });
+
+      nextButton.textContent =
+        currentQuestion === questions.length - 1
+          ? "Finish Quiz ✓"
+          : "Next Question →";
+    }
+
+    nextButton.addEventListener("click", () => {
+      if (selectedAnswer === null) {
+        messageElement.textContent = "Please select an answer first!";
+        return;
+      }
+
+      if (selectedAnswer === questions[currentQuestion].answer) {
+        score++;
+      }
+
+      answered++;
+
+      if (currentQuestion < questions.length - 1) {
+        currentQuestion++;
+        showQuestion();
+      } else {
+        showResult();
+      }
+    });
+
+    function showResult() {
+      document.getElementById("quiz").classList.add("hidden");
+      document.getElementById("result").classList.remove("hidden");
+
+      document.getElementById("progress").style.width = "100%";
+      document.getElementById("score").textContent =
+        `${score} / ${questions.length}`;
+
+      document.getElementById("result-message").textContent =
+        score >= 8 ? "Excellent work!" :
+        score >= 5 ? "Good effort! Keep learning!" :
+        "Keep practising. You can improve!";
+
+      document.getElementById("result-detail").textContent =
+        `You answered ${score} questions correctly out of ${questions.length}.`;
+    }
+
+    document.getElementById("restart-button").addEventListener("click", () => {
+      currentQuestion = 0;
+      score = 0;
+      answered = 0;
+
+      document.getElementById("result").classList.add("hidden");
+      document.getElementById("quiz").classList.remove("hidden");
+
+      showQuestion();
+    });
+
+    showQuestion();
+  </script>
+</body>
+</html>
